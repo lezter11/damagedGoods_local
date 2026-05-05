@@ -28,7 +28,7 @@ export default function App() {
         The Scroll Container 
         Setting a large height allows us to use the scrollbar to drive the animation.
       */}
-      <div className="h-[250vh] relative">
+      <div className="h-[200vh] sm:h-[220vh] md:h-[250vh] relative">
         
         {/* Sticky section that holds the visuals in place while scrolling the 250vh */}
         <div className="sticky top-0 h-screen w-full overflow-hidden">

@@ -51,12 +51,12 @@ export function Products({ scrollProgress }: ProductsProps) {
   return (
     <motion.div 
       style={{ opacity, scale, y }}
-      className="w-full max-w-7xl mx-auto px-6 py-32 min-h-screen flex flex-col justify-center"
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-32 min-h-screen flex flex-col justify-center"
     >
-      <div className="flex items-end justify-between mb-12">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 sm:gap-0 mb-8 sm:mb-12">
         <div>
-          <h2 className="text-sm font-bold tracking-widest uppercase text-white/50 mb-2">FW26 Drop</h2>
-          <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">THE ARCHIVE</h3>
+          <h2 className="text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50 mb-2">FW26 Drop</h2>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white">THE ARCHIVE</h3>
         </div>
         <button className="hidden md:flex items-center gap-2 text-white/70 hover:text-white transition-colors pb-2 border-b border-white/20 hover:border-white">
           <span className="text-sm font-medium">View All</span>
@@ -64,11 +64,11 @@ export function Products({ scrollProgress }: ProductsProps) {
         </button>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-4 sm:gap-5 md:gap-6">
         {products.map((product) => (
           <div 
             key={product.id} 
-            className={`${product.colSpan} group relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden cursor-pointer`}
+            className={`${product.colSpan} group relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer`}
           >
             {/* Image */}
             <div className="absolute inset-0 bg-[#1a1a1a]">
