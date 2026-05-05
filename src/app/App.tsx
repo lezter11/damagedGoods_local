@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import bgImage from "../imports/Transparent_Jacket.png";
 
 export default function App() {
-  // Track overall page scroll
+  // Track overall page scroll - deployed to GitHub Pages
   const { scrollYProgress } = useScroll();
 
   // Split effect logic:
