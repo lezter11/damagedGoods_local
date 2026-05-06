@@ -3,7 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
 import { Products } from "./components/Products";
 import { motion, useScroll, useTransform } from "motion/react";
-import bgImage from "../imports/Transparent_Jacket.png";
+import bgImage from "../imports/HomepageJacket.png";
 
 export default function App() {
   // Track overall page scroll - deployed to GitHub Pages
