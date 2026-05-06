@@ -55,8 +55,8 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Floating UI Elements */}
-      <motion.div 
+      {/* Floating UI Elements - Will be used in next pages */}
+      {/* <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 1.5 }}
@@ -71,7 +71,7 @@ export function Hero() {
             <div className="text-white/60 text-[9px] sm:text-xs">Material Composition</div>
           </div>
         </GlassPanel>
-      </motion.div>
+      </motion.div> */}
 
       {/* Scroll Indicator */}
       <motion.div
