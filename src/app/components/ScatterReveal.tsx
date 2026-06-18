@@ -96,7 +96,7 @@ export function ScatterReveal({ isTriggered, onAnimationComplete }: ScatterRevea
       {/* --- TEXT LAYER --- */}
       <motion.div 
         layoutId="brand-text"
-        className="absolute z-30 flex w-full justify-center text-center font-serif text-[10vw] font-black uppercase leading-none tracking-tighter text-white mix-blend-difference pointer-events-none drop-shadow-2xl"
+        className="absolute z-30 flex w-full justify-center text-center font-sans text-[10vw] font-black uppercase leading-none tracking-[0.15em] text-white mix-blend-difference pointer-events-none drop-shadow-2xl"
         initial={{ opacity: 0, scale: 0.85, y: "5vh" }}
         animate={controls}
         variants={{
@@ -117,7 +117,6 @@ export function ScatterReveal({ isTriggered, onAnimationComplete }: ScatterRevea
       >
         <span>DAMAGED GOODS</span>
       </motion.div>
-      
     </div>
   );
 }

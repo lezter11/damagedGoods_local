@@ -58,6 +58,7 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
         {/* LEFT: Product image */}
         <div className="relative w-full lg:w-[55%] xl:w-[60%] h-[50vh] sm:h-[60vh] lg:h-screen lg:sticky lg:top-0">
           <motion.div
+            layoutId={`product-image-${product.id}`}
             initial={{ scale: 1.05, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}

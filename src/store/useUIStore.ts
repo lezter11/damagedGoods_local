@@ -6,6 +6,8 @@ interface UIStore {
   setIsMenuOpen: (isOpen: boolean) => void;
   phase: "jacket" | "transition" | "products";
   setPhase: (phase: "jacket" | "transition" | "products") => void;
+  hoveredProduct: number | null;
+  setHoveredProduct: (id: number | null) => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -14,4 +16,6 @@ export const useUIStore = create<UIStore>((set) => ({
   setIsMenuOpen: (isOpen) => set({ isMenuOpen: isOpen }),
   phase: "jacket",
   setPhase: (phase) => set({ phase }),
+  hoveredProduct: null,
+  setHoveredProduct: (id) => set({ hoveredProduct: id }),
 }));

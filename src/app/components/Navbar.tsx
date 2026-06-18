@@ -118,7 +118,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                   onClick={onMenuClick}
                   className="flex items-center justify-center focus:outline-none cursor-pointer"
                 >
-                  <Menu className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-white/80 hover:text-white transition-colors" strokeWidth={1.5} />
+                  <Menu className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-black/80 hover:text-red transition-colors" strokeWidth={1.5} />
                 </button>
                 <AnimatePresence mode="wait">
                   {!isSearchOpen && showLogo && (
@@ -126,7 +126,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                       layoutId="brand-text"
                       layout
                       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-white font-bold tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.25em] uppercase text-[10px] sm:text-[11px] md:text-[13px] whitespace-nowrap cursor-pointer z-50 relative"
+                      className="text-black font-bold tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.25em] uppercase text-[10px] sm:text-[11px] md:text-[13px] whitespace-nowrap cursor-pointer z-50 relative"
                     >
                       DAMAGED GOODS
                     </motion.div>
@@ -146,18 +146,18 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                     className="absolute left-1/2 -translate-x-1/2 flex items-center"
                   >
                     <div className="relative w-full flex items-center bg-white/[0.06] rounded-full px-4 py-1.5 border border-white/[0.08]">
-                      <Sparkles className="w-3.5 h-3.5 text-white/30 mr-2.5 shrink-0" />
+                      <Sparkles className="w-3.5 h-3.5 text-black/30 mr-2.5 shrink-0" />
                       <input
                         ref={inputRef}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search Damaged Goods..."
-                        className="w-full bg-transparent border-none outline-none text-white text-[13px] font-medium placeholder:text-white/30 caret-white/60"
+                        className="w-full bg-transparent border-none outline-none text-black text-[13px] font-medium placeholder:text-black/30 caret-white/60"
                       />
                       {query && (
                         <button
                           onClick={() => { setQuery(""); inputRef.current?.focus(); }}
-                          className="text-white/30 hover:text-white/60 transition-colors cursor-pointer ml-2 shrink-0"
+                          className="text-black/30 hover:text-red/60 transition-colors cursor-pointer ml-2 shrink-0"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -190,10 +190,10 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                         )}
                         <span className={`relative z-10 transition-all duration-300 ${
                           hoveredLink === link 
-                            ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" 
+                            ? "text-black drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" 
                             : hoveredLink !== null 
-                              ? "text-white/30" 
-                              : "text-white/80"
+                              ? "text-black/30" 
+                              : "text-black/80"
                         }`}>
                           {link}
                         </span>
@@ -216,7 +216,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                       onClick={() => setIsSearchOpen(false)}
                       className="flex items-center justify-center focus:outline-none cursor-pointer w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
                     >
-                      <X className="w-4 h-4 text-white/80" />
+                      <X className="w-4 h-4 text-black/80" />
                     </motion.button>
                   ) : (
                     <motion.button
@@ -228,7 +228,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                       onClick={() => setIsSearchOpen(true)}
                       className="flex items-center justify-center focus:outline-none cursor-pointer"
                     >
-                      <Search className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-white/80 hover:text-white transition-colors" strokeWidth={1.5} />
+                      <Search className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-black/80 hover:text-red transition-colors" strokeWidth={1.5} />
                     </motion.button>
                   )}
                 </AnimatePresence>
@@ -237,7 +237,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                   onClick={onCartClick}
                   className="relative flex items-center justify-center group focus:outline-none cursor-pointer"
                 >
-                  <ShoppingBag className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                  <ShoppingBag className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-black/80 group-hover:text-red transition-colors" strokeWidth={1.5} />
                   <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-2 flex h-[14px] sm:h-[15px] min-w-[14px] sm:min-w-[15px] items-center justify-center rounded-full bg-white text-black text-[9px] sm:text-[10px] font-bold px-0.5 sm:px-1">
                     2
                   </span>
@@ -265,13 +265,13 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                       <>
                         {/* Trending */}
                         <div className="mb-6">
-                          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/35 mb-3">Trending</p>
+                          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-black/35 mb-3">Trending</p>
                           <div className="flex flex-wrap gap-2">
                             {trendingTags.map((tag) => (
                               <button
                                 key={tag}
                                 onClick={() => handleTagClick(tag)}
-                                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/60 text-xs font-medium hover:bg-white/[0.08] hover:text-white/90 hover:border-white/[0.15] transition-all cursor-pointer"
+                                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-black/60 text-xs font-medium hover:bg-white/[0.08] hover:text-red/90 hover:border-white/[0.15] transition-all cursor-pointer"
                               >
                                 <ArrowRight className="w-3 h-3 -rotate-45" />
                                 {tag}
@@ -282,7 +282,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
 
                         {/* Categories */}
                         <div>
-                          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/35 mb-3">Categories</p>
+                          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-black/35 mb-3">Categories</p>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                             {categories.map((cat) => (
                               <button
@@ -293,7 +293,7 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                                 <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-[#1a1a1a]">
                                   <img src={cat.image} alt={cat.name} className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" />
                                 </div>
-                                <span className="text-xs font-medium text-white/60 group-hover:text-white/90 transition-colors">{cat.name}</span>
+                                <span className="text-xs font-medium text-black/60 group-hover:text-red/90 transition-colors">{cat.name}</span>
                               </button>
                             ))}
                           </div>
@@ -302,14 +302,14 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                     ) : (
                       /* ===== SEARCH RESULTS ===== */
                       <>
-                        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/35 mb-3">
+                        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-black/35 mb-3">
                           {filtered.length} {filtered.length === 1 ? "result" : "results"}
                         </p>
 
                         {filtered.length === 0 ? (
                           <div className="text-center py-10">
-                            <p className="text-white/30 text-sm">No products found for "{query}"</p>
-                            <p className="text-white/15 text-xs mt-1">Try a different search term</p>
+                            <p className="text-black/30 text-sm">No products found for "{query}"</p>
+                            <p className="text-black/15 text-xs mt-1">Try a different search term</p>
                           </div>
                         ) : (
                           <div className="flex flex-col gap-2">
@@ -330,12 +330,12 @@ export function Navbar({ onSearchClick, onSelectProduct, onCartClick, onMenuClic
                                   />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-white/30">{product.category}</p>
-                                  <h4 className="text-sm font-semibold text-white/85 truncate">{product.name}</h4>
+                                  <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-black/30">{product.category}</p>
+                                  <h4 className="text-sm font-semibold text-black/85 truncate">{product.name}</h4>
                                 </div>
-                                <span className="text-xs font-medium text-white/40 shrink-0">{product.price}</span>
+                                <span className="text-xs font-medium text-black/40 shrink-0">{product.price}</span>
                                 <div className="shrink-0 w-6 h-6 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <ArrowRight className="w-3 h-3 text-white/60" />
+                                  <ArrowRight className="w-3 h-3 text-black/60" />
                                 </div>
                               </motion.div>
                             ))}

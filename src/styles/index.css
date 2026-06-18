@@ -1,6 +1,7 @@
 @import './fonts.css';
-@import './tailwind.css';
-@import './theme.css';
+@import "./tailwind.css";
+@import "./theme.css";
+@import "./outfit.css";
 
 @layer utilities {
   .hide-scrollbar::-webkit-scrollbar {
@@ -10,4 +11,29 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+html, body {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }

@@ -107,6 +107,8 @@
   --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
+  --color-red: #ff0001;
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-sidebar: var(--sidebar);
