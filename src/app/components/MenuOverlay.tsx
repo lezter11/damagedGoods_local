@@ -1,147 +1,183 @@
-import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, ArrowRight } from 'lucide-react';
-import hoodieMenuImg from '../../imports/hoodie_menu.png';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+
+// Importing your preview assets
+import hoodieMenuImg from "../../imports/hoodie_menu.png";
+import jacketImg from "../../imports/Jacket_homepage_high_pixel.png";
+import homepageJacketImg from "../../imports/HomepageJacket (1).png";
+import scatterImg from "../../imports/d15637d315c5399b0c2fc1eba40ae34a_l.webp";
 
 interface MenuOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const menuLinks = [
-  { id: '01', label: 'COLLECTION' },
-  { id: '02', label: 'DROPS' },
-  { id: '03', label: 'ARCHIVE' },
-  { id: '04', label: 'ABOUT' },
-  { id: '05', label: 'CONTACT' },
-];
-
 export function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
-  // Handle ESC key to close
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  const [activeImage, setActiveImage] = useState<string>(hoodieMenuImg);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  const menuItems = [
+    { 
+      id: "01", 
+      title: "Collection", 
+      subtitle: "EXPLORE ARCHIVAL CONCEPTS", 
+      img: homepageJacketImg 
+    },
+    { 
+      id: "02", 
+      title: "Drops", 
+      subtitle: "LIMITED EDITION CHRONICLES", 
+      img: jacketImg 
+    },
+    { 
+      id: "03", 
+      title: "About", 
+      subtitle: "THE INTEGRITY ARCHIVE", 
+      img: hoodieMenuImg 
+    },
+    { 
+      id: "04", 
+      title: "Orders", 
+      subtitle: "TRACK REPLICA DELIVERIES", 
+      img: scatterImg 
+    },
+  ];
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          className="fixed inset-0 z-50 flex bg-[#0a0a0a] text-[#faf9f5] overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[200] flex flex-col md:flex-row bg-[#0a0a0a]"
+          transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         >
-          {/* LEFT PANEL */}
-          <div className="w-full md:w-[60%] lg:w-[55%] h-[100dvh] flex flex-col p-6 md:p-10 relative overflow-hidden">
-
-            {/* Top Bar (Close) */}
-            <div className="flex justify-between items-center mb-6 shrink-0">
+          {/* ================= LEFT SIDE: MINIMAL NAV NAVIGATION ================= */}
+          <div className="w-full lg:w-[52%] h-full flex flex-col justify-between p-8 sm:p-12 md:p-16 lg:p-20 relative z-10 bg-[#0a0a0a]">
+            
+            {/* Upper Info Row */}
+            <div className="w-full flex justify-between items-center">
+              <span className="font-mono text-[10px] tracking-[0.35em] uppercase text-neutral-500">
+                [ DG SYSTEM // INDEX PANEL ]
+              </span>
               <button
                 onClick={onClose}
-                className="text-white/60 hover:text-white transition-colors cursor-pointer"
+                className="group flex items-center gap-3 cursor-pointer focus:outline-none text-neutral-400 hover:text-white transition-colors duration-300"
               >
-                <X className="w-8 h-8" strokeWidth={1} />
+                <span className="font-mono text-[9px] tracking-[0.25em] uppercase opacity-0 group-hover:opacity-50 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                  CLOSE //
+                </span>
+                <div className="w-5 h-5 relative flex items-center justify-center">
+                  <span className="absolute w-full h-[1px] bg-current rotate-45 group-hover:rotate-90 transition-transform duration-300" />
+                  <span className="absolute w-full h-[1px] bg-current -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                </div>
               </button>
             </div>
 
-            {/* Menu Links */}
-            <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto min-h-0">
-              {menuLinks.map((link, index) => (
-                <motion.a
-                  key={link.id}
-                  href={`#${link.label.toLowerCase()}`}
-                  onClick={onClose}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + index * 0.1, duration: 0.5, ease: "easeOut" }}
-                  className="group flex-1 flex items-center justify-between border-b border-white/[0.08] cursor-pointer min-h-0"
-                >
-                  <div className="flex items-start gap-4 md:gap-8">
-                    <span className="text-[10px] font-bold tracking-widest text-white/40 pt-2">{link.id}</span>
-                    <span className="text-[clamp(2.5rem,6vw,6rem)] font-serif tracking-tight text-white/90 group-hover:text-white transition-colors leading-none">
-                      {link.label}
-                    </span>
+            {/* Menu Items Links Container */}
+            <nav className="flex flex-col w-full my-auto py-12">
+              {menuItems.map((item, index) => {
+                const isHovered = activeIndex === index;
+                const isAnyHovered = activeIndex !== null;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="relative border-b border-neutral-900 py-6 sm:py-8 cursor-pointer overflow-hidden group"
+                    onMouseEnter={() => {
+                      setActiveImage(item.img);
+                      setActiveIndex(index);
+                    }}
+                    onMouseLeave={() => {
+                      setActiveIndex(null);
+                    }}
+                  >
+                    <div className="flex items-start justify-between w-full relative z-10">
+                      <div className="flex items-start gap-6 md:gap-10">
+                        {/* Index Indicator */}
+                        <span className={`font-mono text-[10px] md:text-xs mt-2 md:mt-3 transition-all duration-400 ${
+                          isHovered ? "text-[#c00000] translate-x-1" : "text-neutral-600"
+                        }`}>
+                          {item.id}
+                        </span>
+
+                        {/* Text Stack */}
+                        <div className="flex flex-col">
+                          <h2 
+                            className={`text-[clamp(2rem,5vw,4.5rem)] font-black uppercase tracking-tight leading-none transition-all duration-500 ease-[0.16,1,0.3,1] ${
+                              isHovered 
+                                ? "text-white translate-x-3 scale-[1.01]" 
+                                : isAnyHovered 
+                                  ? "text-neutral-700 opacity-40" 
+                                  : "text-[#eeece7]"
+                            }`}
+                          >
+                            {item.title}
+                          </h2>
+                          <p className={`font-mono text-[9px] tracking-[0.25em] transition-all duration-400 mt-2.5 uppercase ${
+                            isHovered ? "text-neutral-400 translate-x-3" : "text-neutral-600"
+                          }`}>
+                            {item.subtitle}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right Indicator: Minimal Horizontal Reveal Dash */}
+                      <div className="h-[1px] bg-neutral-800 self-center flex-grow mx-8 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative">
+                        <motion.div 
+                          className="absolute inset-0 bg-[#c00000]"
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: isHovered ? 1 : 0 }}
+                          transition={{ duration: 0.4 }}
+                          style={{ transformOrigin: "left" }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <ArrowRight className="w-6 h-6 text-white/0 group-hover:text-white transition-all duration-300 -translate-x-4 group-hover:translate-x-0" strokeWidth={1} />
-                </motion.a>
-              ))}
+                );
+              })}
+            </nav>
+
+            {/* Bottom System Labels */}
+            <div className="w-full flex items-end justify-between font-mono text-[9px] text-neutral-600 tracking-widest pt-4 border-t border-neutral-900/60">
+              <span>DESIGN PROTOCOL v2.06</span>
+              <span>[ BRAND ARCHIVE ALL RIGHTS RESERVED ]</span>
             </div>
-
-            {/* Bottom Section */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-between items-end gap-6 shrink-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="flex flex-col gap-6"
-              >
-                <div className="text-white/80 font-bold tracking-[0.2em] uppercase text-xs md:text-sm leading-relaxed">
-                  <p>THE ARCHIVE</p>
-                  <p>OF TOMORROW.</p>
-                </div>
-
-                <div className="flex flex-wrap gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold tracking-widest text-white/40">
-                  <a href="#" className="hover:text-white transition-colors">INSTAGRAM</a>
-                  <a href="#" className="hover:text-white transition-colors">TIKTOK</a>
-                  <a href="#" className="hover:text-white transition-colors">PINTEREST</a>
-                  <a href="#" className="hover:text-white transition-colors">YOUTUBE</a>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9 }}
-                className="flex flex-col gap-2 text-right sm:text-left"
-              >
-                <span className="text-[8px] md:text-[9px] font-bold tracking-widest text-white/40 uppercase">LATEST DROP</span>
-                <span className="text-sm md:text-base font-bold tracking-[0.2em] text-white uppercase">DROP_07</span>
-                <span className="text-[8px] md:text-[9px] font-bold tracking-widest text-white/30 uppercase">AVAILABLE NOW</span>
-              </motion.div>
-            </div>
-
           </div>
 
-          {/* RIGHT PANEL (Image) */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden md:block w-full md:w-[40%] lg:w-[45%] h-[100dvh] relative"
-          >
-            <div className="absolute inset-0 bg-black/40 z-10" />
-
-            <img
-              src={hoodieMenuImg}
-              alt="Menu Feature"
-              className="w-full h-full object-cover filter grayscale opacity-70"
-            />
-
-            {/* Top Right "CLOSE MENU" text */}
-            <div className="absolute top-10 right-10 z-20">
-              <span
-                className="text-[10px] font-bold tracking-widest text-white/40 hover:text-white transition-colors cursor-pointer"
-                onClick={onClose}
+          {/* ================= RIGHT SIDE: HIGH-PIXEL MEDIA LOOKBOOK PANEL ================= */}
+          <div className="hidden lg:block lg:w-[48%] h-full bg-[#0d0d0d] relative border-l border-neutral-900 overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeImage}
+                className="absolute inset-0 w-full h-full"
+                initial={{ opacity: 0, filter: "grayscale(100%) brightness(0.2)" }}
+                animate={{ opacity: 1, filter: "grayscale(100%) brightness(0.48) contrast(1.1)" }}
+                exit={{ opacity: 0, filter: "grayscale(100%) brightness(0.2)" }}
+                transition={{ duration: 0.35, ease: "linear" }}
               >
-                CLOSE MENU
-              </span>
+                <img
+                  src={activeImage}
+                  alt="System Focus Visual Lookbook"
+                  className="w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-100 group-hover:scale-[1.03]"
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Tech Geometry Grid Overlays */}
+            <div className="absolute inset-0 grid grid-cols-4 pointer-events-none opacity-[0.03]">
+              <div className="border-r border-neutral-100 h-full" />
+              <div className="border-r border-neutral-100 h-full" />
+              <div className="border-r border-neutral-100 h-full" />
             </div>
 
-            {/* Bottom Center Copyright */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 w-full text-center">
-              <span className="text-[8px] md:text-[9px] font-bold tracking-widest text-white/40 uppercase">
-                © 2026 DAMAGED GOODS. ALL RIGHTS RESERVED.
-              </span>
+            {/* Running Corporate Signature Label Block */}
+            <div className="absolute bottom-12 right-12 z-20 text-right font-mono text-[9px] tracking-[0.25em] text-neutral-500">
+              <p className="text-neutral-400 font-bold tracking-[0.3em] uppercase mb-1">© 2026 DAMAGED GOODS SYSTEM</p>
+              <p className="opacity-40">AUTO_CONF_SECURE // SYSTEM_STABLE</p>
             </div>
-          </motion.div>
-
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
