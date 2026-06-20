@@ -1,10 +1,11 @@
-import React from "react";
-
+import React, { useEffect, useRef } from "react";
 import { useUIStore } from "../../store/useUIStore";
 import { products } from "../data/products";
-import { motion } from "motion/react";
-import { useCartStore } from "../../store/useCartStore";
 import { Footer } from "./Footer";
+import { LiquidBlobHero } from "./LiquidBlobHero";
+import { EditorialGrid } from "./EditorialGrid";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function OutfitReplica({
   onProductClick,
@@ -12,137 +13,156 @@ export function OutfitReplica({
   onProductClick?: (p: any) => void;
 }) {
   const { setHoveredProduct } = useUIStore();
+  const horizontalSectionRef = useRef<HTMLDivElement>(null);
+  const horizontalTriggerRef = useRef<HTMLDivElement>(null);
+  const panelsSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Horizontal Sequence for Collections Feature Showcase
+    const horizontalCtx = gsap.context(() => {
+      if (!horizontalSectionRef.current) return;
+
+      const scrollWidth = horizontalSectionRef.current.scrollWidth;
+      const viewWidth = window.innerWidth;
+      const totalTranslation = scrollWidth - viewWidth;
+
+      if (totalTranslation > 0) {
+        gsap.to(horizontalSectionRef.current, {
+          x: -totalTranslation,
+          ease: "none",
+          scrollTrigger: {
+            trigger: horizontalTriggerRef.current,
+            pin: true,
+            scrub: 1,
+            start: "top top",
+            end: () => `+=${totalTranslation}`,
+            invalidateOnRefresh: true,
+          },
+        });
+      }
+    }, horizontalTriggerRef);
+
+    // Panels section header entrance
+    const panelsCtx = gsap.context(() => {
+      gsap.fromTo(
+        ".panels-header",
+        { opacity: 0, x: -40 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 1.0,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".panels-header",
+            start: "top 90%",
+          },
+        }
+      );
+    }, panelsSectionRef);
+
+    return () => {
+      horizontalCtx.revert();
+      panelsCtx.revert();
+    };
+  }, []);
+
+  const handleScrollDown = () => {
+    if (panelsSectionRef.current) {
+      panelsSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
-      <main id="page" data-page="home">
-        <div className="px-4 lg:px-6">
-          <div className="mt-26 mb-6">
-            <div className="relative">
-              <div className="overflow-hidden pb-4">
-                <motion.h1
-                  className="text-[13vw] leading-[0.75] font-[900] uppercase tracking-tighter"
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{
-                    duration: 0.8,
-                    ease: [0.16, 1, 0.3, 1],
-                    delay: 0.1,
-                  }}
-                >
-                  DAMAGED GOODS
-                </motion.h1>
-              </div>
-            </div>
-            <motion.div
-              id="hero-line"
-              className="mb-6 h-[5px] w-full origin-left bg-current"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            ></motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              id="hero-content"
-              className="mb-10 grid grid-cols-8 gap-x-6 gap-y-10 text-xs font-bold md:grid-cols-16 md:gap-6"
+      <main id="page" className="w-full relative overflow-x-hidden">
+
+        {/* ── NEW: LIQUID BLOB HERO ── */}
+        <LiquidBlobHero onScrollDown={handleScrollDown} />
+
+        {/* ── STICKY HORIZONTAL FEATURE PANELS ── */}
+        <div
+          ref={panelsSectionRef}
+          className="relative w-full"
+        >
+          <div
+            ref={horizontalTriggerRef}
+            className="relative w-full overflow-hidden bg-[#0c0c0c] text-white h-screen flex items-center"
+          >
+            <div
+              ref={horizontalSectionRef}
+              className="flex flex-row h-full w-max items-center px-12 gap-16 will-change-transform"
             >
-              <div className="col-span-3 md:col-span-4">
-                <h1 className="uppercase" id="hero-title">
-                  Damaged Goods
-                </h1>
-              </div>
-              <div className="col-span-5 md:col-span-8">
-                <h2 className="mb-4 uppercase" id="hero-subtitle">
-                  Why
-                </h2>
-                <p
-                  id="hero-paragraph"
-                  className="text-sm leading-4 tracking-tight md:max-w-[60%]"
-                >
-                  Created by the ++hellohello team, this store and signature
-                  collection celebrates our collective creativity and passion
-                  for apparel. Carefully designed.
+              {/* Intro Card */}
+              <div className="w-[45vw] md:w-[28vw] flex-shrink-0 flex flex-col justify-center gap-4">
+                <p className="panels-header font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-500">
+                  THE PANELS // AW-25
+                </p>
+                <h4 className="text-[6vw] font-black tracking-tighter leading-none uppercase select-none">
+                  THE PANELS <br />
+                  <span className="text-neutral-600">COLLECTION</span>
+                </h4>
+                <div className="w-8 h-[1px] bg-[#c00000]" />
+                <p className="font-mono text-[9px] tracking-[0.2em] text-neutral-500 uppercase">
+                  {products.length} ARCHIVE UNITS
                 </p>
               </div>
-              <div className="col-span-3 flex h-full flex-col justify-between md:col-span-3">
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link-hover max-w-fit uppercase"
-                  id="hero-link"
-                  href="https://www.hellohello.is"
-                >
-                  Visit ++ website
-                </a>
-                <a
-                  className="link-hover max-w-fit uppercase hidden md:inline-block"
-                  id="hero-shipping-returns-link"
-                  href="/shipping-and-return"
-                >
-                  Shipping &amp; Returns
-                </a>
-              </div>
-              <div
-                className="col-span-5 flex justify-end md:col-span-1"
-                id="hero-copyright"
-              >
-                © 2026
-              </div>
-              <div
-                className="col-span-8 inline-block md:hidden"
-                id="hero-shipping-returns-link-mobile"
-              >
-                <a
-                  className="link-hover max-w-fit link-hover uppercase"
-                  href="#"
-                >
-                  Shipping &amp; Returns
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-        <div className="px-4 lg:px-6">
-          <div className="px-4 lg:px-6 mb-34 mt-20">
-            <section className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              {products.slice(0, 4).map((product) => (
-                <motion.article
-                  layoutId={`product-image-${product.id}`}
-                  key={product.id}
-                  className="group relative cursor-none"
-                  onMouseEnter={() => setHoveredProduct(product.id)}
+
+              {/* Product Cards */}
+              {products.map((p, i) => (
+                <div
+                  key={`hz-${p.id}`}
+                  className="w-[60vw] md:w-[33vw] aspect-[3/4] flex-shrink-0 relative bg-neutral-900 group overflow-hidden border border-neutral-800/60 cursor-none"
+                  onMouseEnter={() => setHoveredProduct(p.id)}
                   onMouseLeave={() => setHoveredProduct(null)}
                   onClick={() => {
-                    setHoveredProduct(null); // Reset hover
-                    if (onProductClick) {
-                      onProductClick(product);
-                    }
+                    setHoveredProduct(null);
+                    onProductClick?.(p);
                   }}
                 >
-                  <div className="relative w-full aspect-[4/5] overflow-hidden bg-[#1A1816] mb-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 mix-blend-normal"
-                    />
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-full h-full object-cover opacity-75 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-1000 ease-out filter contrast-[1.02] grayscale group-hover:grayscale-0"
+                  />
+
+                  {/* Number overlay */}
+                  <div className="absolute top-5 left-5 font-mono text-[9px] tracking-[0.2em] uppercase text-white/20 group-hover:text-white/50 transition-colors duration-500">
+                    {String(i + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-bold text-sm tracking-tight">
-                        {product.name}
-                      </h3>
-                      <span className="font-bold text-sm">{product.price}</span>
+
+                  {/* View Details tag */}
+                  <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="font-mono text-[8px] tracking-[0.2em] uppercase bg-[#c00000] text-white px-2 py-1">
+                      VIEW //
+                    </span>
+                  </div>
+
+                  {/* Bottom info */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                    <p className="font-mono text-[8px] tracking-[0.2em] uppercase text-neutral-500 mb-1">
+                      {p.category}
+                    </p>
+                    <div className="flex justify-between items-end">
+                      <h5 className="font-black text-base tracking-tight text-white uppercase leading-tight max-w-[70%]">
+                        {p.name}
+                      </h5>
+                      <span className="font-mono text-xs font-bold bg-white text-black px-2 py-0.5 shrink-0">
+                        {p.price}
+                      </span>
                     </div>
                   </div>
-                </motion.article>
+                </div>
               ))}
-            </section>
+            </div>
           </div>
-
-          <template id="P:3"></template>
         </div>
+
+        {/* ── EDITORIAL PRODUCT GRID ── */}
+        <EditorialGrid onProductClick={onProductClick} />
       </main>
+
       <Footer />
     </>
   );

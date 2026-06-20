@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Navbar } from "./components/Navbar";
-import { Products } from "./components/Products";
-import { Footer } from "./components/Footer";
-import { ProductPage, type Product } from "./components/ProductPage";
+import { type Product } from "./components/ProductPage";
+import { ProductDrawer } from "./components/ProductDrawer";
 import { CartPage } from "./components/CartPage";
 import { MenuOverlay } from "./components/MenuOverlay";
 import { ProductTransition } from "./components/ProductTransition";
@@ -10,40 +9,88 @@ import { ScatterReveal } from "./components/ScatterReveal";
 import { OutfitReplica } from "./components/OutfitReplica";
 import { CustomCursor } from "./components/CustomCursor";
 import { WebGLBackground } from "./components/WebGLBackground";
+import { CheckoutModal } from "./components/CheckoutModal";
 import { motion, AnimatePresence } from "motion/react";
 import { useUIStore } from "../store/useUIStore";
 import { useCartStore } from "../store/useCartStore";
 
+// GSAP + Lenis Integration Requirements
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+
 export default function App() {
   const { isMenuOpen, setIsMenuOpen, hoveredProduct } = useUIStore();
-  const { isCartOpen, setIsCartOpen } = useCartStore();
+  const { isCartOpen, setIsCartOpen, addItem } = useCartStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [transitioningProduct, setTransitioningProduct] = useState<Product | null>(null);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  // Animation States
+  // Intro Animation States
   const [isScatterTriggered, setIsScatterTriggered] = useState(false);
   const [isScatterFinished, setIsScatterFinished] = useState(false);
 
+  // Scroll Container Reference
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
-    // Disable browser's automatic scroll restoration on refresh
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
+    // 1. Disable browser's native scroll restoration behavior
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
     }
-    // Always start at the very top for the cinematic experience
     window.scrollTo(0, 0);
 
-    // Trigger scatter animation immediately after mount
+    // 2. Initialize GSAP Plugins
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 3. Initialize Lenis Smooth Scrolling
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1,
+    });
+
+    lenisRef.current = lenis;
+
+    // 4. Synchronize Lenis frames with GSAP ScrollTrigger
+    lenis.on("scroll", ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    // 5. Cinematic Scatter Trigger delay
     const timer = setTimeout(() => {
       setIsScatterTriggered(true);
-    }, 100); 
-    
-    return () => clearTimeout(timer);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      lenis.destroy();
+      gsap.ticker.remove(lenis.raf);
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
   }, []);
+
+  // Sync scroll-lock layout changes when modal menus overlay
+  useEffect(() => {
+    if (isMenuOpen || isCartOpen || selectedProduct || isCheckoutOpen) {
+      lenisRef.current?.stop();
+    } else {
+      lenisRef.current?.start();
+    }
+  }, [isMenuOpen, isCartOpen, selectedProduct, isCheckoutOpen]);
 
   const handleScatterComplete = React.useCallback(() => {
     setIsScatterFinished(true);
   }, []);
-  
+
   const handleProductSelect = (product: Product) => {
     setTransitioningProduct(product);
   };
@@ -51,13 +98,16 @@ export default function App() {
   const isHovered = hoveredProduct !== null;
 
   return (
-    <div className={`text-black selection:bg-red selection:text-white font-sans relative min-h-screen transition-colors duration-700 ease-out ${
-      isHovered ? "bg-[#ff0001] text-white" : "bg-cream text-black"
-    }`}>
+    <div
+      ref={scrollContainerRef}
+      className={`selection:bg-black selection:text-white font-sans relative min-h-screen transition-colors duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isHovered ? "bg-[#ea3423] text-white" : "bg-white text-black"
+      }`}
+    >
       <WebGLBackground />
       <CustomCursor />
-      
-      {/* FIXED NAVBAR */}
+
+      {/* FIXED NAVIGATION INTERFACE CONTAINER */}
       <div className="fixed top-0 left-0 w-full z-50 pointer-events-auto">
         <Navbar
           onSelectProduct={handleProductSelect}
@@ -67,26 +117,26 @@ export default function App() {
         />
       </div>
 
-      {/* OVERLAY SCATTER REVEAL */}
+      {/* EXPERIMENTAL LOADING LAYER */}
       <div className="fixed inset-0 z-40 pointer-events-none flex items-center justify-center">
         <AnimatePresence>
           {!isScatterFinished && (
-            <ScatterReveal 
-              isTriggered={isScatterTriggered} 
-              onAnimationComplete={handleScatterComplete} 
+            <ScatterReveal
+              isTriggered={isScatterTriggered}
+              onAnimationComplete={handleScatterComplete}
             />
           )}
         </AnimatePresence>
       </div>
 
-      {/* LAYER 3: OUTFIT REPLICA */}
-      <div className="relative z-30 min-h-screen flex flex-col">
+      {/* CORE EDITORIAL CONTENT WRAPPER */}
+      <div className="relative z-30 w-full flex flex-col">
         <AnimatePresence>
           {isScatterFinished && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="w-full"
             >
               <OutfitReplica onProductClick={handleProductSelect} />
@@ -95,27 +145,51 @@ export default function App() {
         </AnimatePresence>
       </div>
 
-      {/* OVERLAYS */}
-      <AnimatePresence>
-        {selectedProduct && (
-          <ProductPage
-            key={selectedProduct.id}
-            product={selectedProduct}
-            onBack={() => setSelectedProduct(null)}
-          />
-        )}
-      </AnimatePresence>
+      {/* GLOBAL ROUTING OVERLAYS */}
+      <ProductDrawer
+        product={selectedProduct}
+        isOpen={selectedProduct !== null}
+        onClose={() => setSelectedProduct(null)}
+        onBuyNow={(prod, size, qty) => {
+          const symbol = prod.price.startsWith("₹") ? "₹" : "$";
+          const numericPrice = parseFloat(prod.price.replace(/[^0-9.]/g, "")) || 0;
+          const compositeId = `${prod.id}-${size}`;
+          addItem({
+            id: compositeId,
+            productId: String(prod.id),
+            name: prod.name.toUpperCase(),
+            price: numericPrice,
+            quantity: qty,
+            size: size,
+            image: prod.image,
+            currencySymbol: symbol
+          });
+          setSelectedProduct(null);
+          setIsCheckoutOpen(true);
+        }}
+      />
 
       <AnimatePresence>
         {isCartOpen && (
-          <CartPage onClose={() => setIsCartOpen(false)} />
+          <CartPage 
+            onClose={() => setIsCartOpen(false)} 
+            onCheckout={() => {
+              setIsCartOpen(false);
+              setIsCheckoutOpen(true);
+            }}
+          />
         )}
       </AnimatePresence>
 
       <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+      />
+
       {transitioningProduct && (
-        <ProductTransition 
+        <ProductTransition
           onReveal={() => {
             setSelectedProduct(transitioningProduct);
             setTransitioningProduct(null);
