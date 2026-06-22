@@ -10,11 +10,11 @@ package-lock.json
 yarn.lock
 outfit.hellohello.is.har
 outfit_extracted.html
-*.cjs
-*.js
+/*.cjs
+/*.js
 !src/**/*.js
 !vite.config.js
-*.png
+/*.png
 !src/**/*.png
 videos/
 
