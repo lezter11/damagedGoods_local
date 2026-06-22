@@ -60,10 +60,10 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
   const filtered = query.trim() === ""
     ? products
     : products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query.toLowerCase()) ||
-          p.category.toLowerCase().includes(query.toLowerCase())
-      );
+      (p) =>
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.category.toLowerCase().includes(query.toLowerCase())
+    );
 
   const trendingTags = ["streetwear", "outerwear", "cargo pants", "new drops"];
   const categories = [
@@ -93,7 +93,7 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
         )}
       </AnimatePresence>
 
-      <motion.div 
+      <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -103,10 +103,10 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
         <div className="w-full max-w-6xl">
           <GlassPanel className={`w-full h-[50px] sm:h-[56px] md:h-[60px] ${isSearchOpen ? 'rounded-t-2xl sm:rounded-t-3xl' : 'rounded-full'} transition-all duration-300`}>
             <div className="relative flex flex-row items-center justify-between w-full h-full px-3 sm:px-4 md:px-6">
-              
+
               {/* LEFT ACTIONS AREA */}
               <div className="flex flex-row items-center gap-2 sm:gap-3 md:gap-5 shrink-0">
-                <button 
+                <button
                   onClick={onMenuClick}
                   className="flex items-center justify-center focus:outline-none cursor-pointer p-1 rounded-full hover:bg-black/5 transition-colors"
                 >
@@ -120,7 +120,7 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
                       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                       className="text-black font-black tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.25em] uppercase text-[10px] sm:text-[11px] md:text-[13px] whitespace-nowrap cursor-pointer z-50 relative"
                     >
-                      ANTIGRAVITY
+                      Damaged Goods
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -167,8 +167,8 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
                     onMouseLeave={() => setHoveredLink(null)}
                   >
                     {navLinks.map((link) => (
-                      <a 
-                        key={link} 
+                      <a
+                        key={link}
                         href={`#${link.toLowerCase()}`}
                         onMouseEnter={() => setHoveredLink(link)}
                         className="relative px-4 py-2 text-[13px] tracking-wide font-medium whitespace-nowrap transition-colors duration-300"
@@ -180,13 +180,12 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
                             transition={{ type: "spring", stiffness: 350, damping: 30 }}
                           />
                         )}
-                        <span className={`relative z-10 transition-all duration-300 ${
-                          hoveredLink === link 
-                            ? "text-black" 
-                            : hoveredLink !== null 
-                              ? "text-black/30" 
-                              : "text-black/80"
-                        }`}>
+                        <span className={`relative z-10 transition-all duration-300 ${hoveredLink === link
+                          ? "text-black"
+                          : hoveredLink !== null
+                            ? "text-black/30"
+                            : "text-black/80"
+                          }`}>
                           {link}
                         </span>
                       </a>
@@ -224,8 +223,8 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
                     </motion.button>
                   )}
                 </AnimatePresence>
-                
-                <button 
+
+                <button
                   onClick={onCartClick}
                   className="relative flex items-center justify-center group focus:outline-none cursor-pointer p-1 rounded-full hover:bg-black/5 transition-colors"
                 >
@@ -253,7 +252,7 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
               >
                 <div className="bg-[#121212] border border-neutral-900 border-t-0 rounded-b-2xl sm:rounded-b-3xl shadow-[0_30px_60px_rgba(0,0,0,0.8)] max-h-[65vh] overflow-y-auto">
                   <div className="px-5 sm:px-6 md:px-8 py-6">
-                    
+
                     {query.trim() === "" ? (
                       <div className="space-y-6">
                         {/* Trending Section */}
