@@ -21,50 +21,60 @@ export function OutfitReplica({
     gsap.registerPlugin(ScrollTrigger);
 
     // Horizontal Sequence for Collections Feature Showcase
-    const horizontalCtx = gsap.context(() => {
-      if (!horizontalSectionRef.current) return;
+    let horizontalCtx: gsap.Context | undefined;
+    if (horizontalTriggerRef.current && horizontalSectionRef.current) {
+      horizontalCtx = gsap.context(() => {
+        const scrollWidth = horizontalSectionRef.current!.scrollWidth;
+        const viewWidth = window.innerWidth;
+        const totalTranslation = scrollWidth - viewWidth;
 
-      const scrollWidth = horizontalSectionRef.current.scrollWidth;
-      const viewWidth = window.innerWidth;
-      const totalTranslation = scrollWidth - viewWidth;
-
-      if (totalTranslation > 0) {
-        gsap.to(horizontalSectionRef.current, {
-          x: -totalTranslation,
-          ease: "none",
-          scrollTrigger: {
-            trigger: horizontalTriggerRef.current,
-            pin: true,
-            scrub: 1,
-            start: "top top",
-            end: () => `+=${totalTranslation}`,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-    }, horizontalTriggerRef);
+        if (totalTranslation > 0) {
+          gsap.to(horizontalSectionRef.current, {
+            x: -totalTranslation,
+            ease: "none",
+            scrollTrigger: {
+              trigger: horizontalTriggerRef.current,
+              pin: true,
+              scrub: 1,
+              start: "top top",
+              end: () => `+=${totalTranslation}`,
+              invalidateOnRefresh: true,
+            },
+          });
+        }
+      }, horizontalTriggerRef);
+    }
 
     // Panels section header entrance
-    const panelsCtx = gsap.context(() => {
-      gsap.fromTo(
-        ".panels-header",
-        { opacity: 0, x: -40 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1.0,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".panels-header",
-            start: "top 90%",
-          },
-        }
-      );
-    }, panelsSectionRef);
+    let panelsCtx: gsap.Context | undefined;
+    if (panelsSectionRef.current) {
+      panelsCtx = gsap.context(() => {
+        gsap.fromTo(
+          ".panels-header",
+          { opacity: 0, x: -40 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1.0,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: ".panels-header",
+              start: "top 90%",
+            },
+          }
+        );
+      }, panelsSectionRef);
+    }
+
+    // Fix GSAP calculating wrong positions due to dynamic mount and image loading
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
 
     return () => {
-      horizontalCtx.revert();
-      panelsCtx.revert();
+      clearTimeout(timer);
+      horizontalCtx?.revert();
+      panelsCtx?.revert();
     };
   }, []);
 
@@ -77,8 +87,7 @@ export function OutfitReplica({
   return (
     <>
       <main id="page" className="w-full relative overflow-x-hidden">
-
-        {/* ── NEW: LIQUID BLOB HERO ── */}
+        {/* ── RESTORED: LIQUID BLOB HERO ── */}
         <LiquidBlobHero onScrollDown={handleScrollDown} />
 
         {/* ── STICKY HORIZONTAL FEATURE PANELS ── */}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Navbar } from "./components/Navbar";
-import { type Product } from "./components/ProductPage";
-import { ProductDrawer } from "./components/ProductDrawer";
+import { ProductPage, type Product } from "./components/ProductPage";
 import { CartPage } from "./components/CartPage";
 import { MenuOverlay } from "./components/MenuOverlay";
 import { ProductTransition } from "./components/ProductTransition";
 import { ScatterReveal } from "./components/ScatterReveal";
 import { OutfitReplica } from "./components/OutfitReplica";
+import { PodiumHero } from "../components/dom/PodiumHero";
 import { CustomCursor } from "./components/CustomCursor";
 import { WebGLBackground } from "./components/WebGLBackground";
 import { CheckoutModal } from "./components/CheckoutModal";
@@ -19,7 +19,37 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: any}> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', background: 'red', color: 'white', zIndex: 9999, position: 'relative' }}>
+          <h1>Something went wrong.</h1>
+          <pre>{this.state.error?.toString()}</pre>
+          <pre>{this.state.error?.stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const { isMenuOpen, setIsMenuOpen, hoveredProduct } = useUIStore();
   const { isCartOpen, setIsCartOpen, addItem } = useCartStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -27,8 +57,11 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   // Intro Animation States
+  const USE_SCATTER_REVEAL = false; // Flag to toggle animation (disabled for now)
+  const USE_PODIUM_HERO = true;
   const [isScatterTriggered, setIsScatterTriggered] = useState(false);
-  const [isScatterFinished, setIsScatterFinished] = useState(false);
+  const [isScatterFinished, setIsScatterFinished] = useState(!USE_SCATTER_REVEAL);
+  const [isPodiumFinished, setIsPodiumFinished] = useState(!USE_PODIUM_HERO);
 
   // Scroll Container Reference
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -100,8 +133,8 @@ export default function App() {
   return (
     <div
       ref={scrollContainerRef}
-      className={`selection:bg-black selection:text-white font-sans relative min-h-screen transition-colors duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isHovered ? "bg-[#ea3423] text-white" : "bg-white text-black"
+      className={`selection:bg-white selection:text-black font-sans relative min-h-screen transition-colors duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isHovered ? "bg-[#ea3423] text-white" : "bg-[#050505] text-white"
       }`}
     >
       <WebGLBackground />
@@ -109,18 +142,28 @@ export default function App() {
 
       {/* FIXED NAVIGATION INTERFACE CONTAINER */}
       <div className="fixed top-0 left-0 w-full z-50 pointer-events-auto">
-        <Navbar
-          onSelectProduct={handleProductSelect}
-          onCartClick={() => setIsCartOpen(true)}
-          onMenuClick={() => setIsMenuOpen(true)}
-          showLogo={isScatterFinished}
-        />
+        <AnimatePresence>
+          {isPodiumFinished && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.0, ease: "easeOut", delay: 0.5 }}
+            >
+              <Navbar
+                onSelectProduct={handleProductSelect}
+                onCartClick={() => setIsCartOpen(true)}
+                onMenuClick={() => setIsMenuOpen(true)}
+                showLogo={isScatterFinished}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* EXPERIMENTAL LOADING LAYER */}
       <div className="fixed inset-0 z-40 pointer-events-none flex items-center justify-center">
         <AnimatePresence>
-          {!isScatterFinished && (
+          {USE_SCATTER_REVEAL && !isScatterFinished && (
             <ScatterReveal
               isTriggered={isScatterTriggered}
               onAnimationComplete={handleScatterComplete}
@@ -129,45 +172,53 @@ export default function App() {
         </AnimatePresence>
       </div>
 
+      {/* PODIUM HERO PORTAL */}
+      {USE_PODIUM_HERO && !isPodiumFinished && (
+        <PodiumHero onComplete={() => {
+          setIsPodiumFinished(true);
+          if (lenisRef.current) {
+            lenisRef.current.scrollTo(0, { immediate: true });
+          } else {
+            window.scrollTo(0, 0);
+          }
+        }} />
+      )}
+
       {/* CORE EDITORIAL CONTENT WRAPPER */}
       <div className="relative z-30 w-full flex flex-col">
-        <AnimatePresence>
-          {isScatterFinished && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full"
-            >
-              <OutfitReplica onProductClick={handleProductSelect} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isScatterFinished && isPodiumFinished && (
+          <div className="w-full">
+            <OutfitReplica onProductClick={handleProductSelect} />
+          </div>
+        )}
       </div>
 
       {/* GLOBAL ROUTING OVERLAYS */}
-      <ProductDrawer
-        product={selectedProduct}
-        isOpen={selectedProduct !== null}
-        onClose={() => setSelectedProduct(null)}
-        onBuyNow={(prod, size, qty) => {
-          const symbol = prod.price.startsWith("₹") ? "₹" : "$";
-          const numericPrice = parseFloat(prod.price.replace(/[^0-9.]/g, "")) || 0;
-          const compositeId = `${prod.id}-${size}`;
-          addItem({
-            id: compositeId,
-            productId: String(prod.id),
-            name: prod.name.toUpperCase(),
-            price: numericPrice,
-            quantity: qty,
-            size: size,
-            image: prod.image,
-            currencySymbol: symbol
-          });
-          setSelectedProduct(null);
-          setIsCheckoutOpen(true);
-        }}
-      />
+      <AnimatePresence>
+        {selectedProduct && !isCheckoutOpen && (
+          <ProductPage
+            product={selectedProduct}
+            onBack={() => setSelectedProduct(null)}
+            onBuyNow={(prod, size, qty) => {
+              const symbol = prod.price.startsWith("₹") ? "₹" : "$";
+              const numericPrice = parseFloat(prod.price.replace(/[^0-9.]/g, "")) || 0;
+              const compositeId = `${prod.id}-${size}`;
+              addItem({
+                id: compositeId,
+                productId: String(prod.id),
+                name: prod.name.toUpperCase(),
+                price: numericPrice,
+                quantity: qty,
+                size: size,
+                image: prod.image,
+                currencySymbol: symbol
+              });
+              setSelectedProduct(null);
+              setIsCheckoutOpen(true);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isCartOpen && (
