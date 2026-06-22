@@ -3,35 +3,25 @@ import { motion, AnimatePresence } from "motion/react";
 
 interface ProductTransitionProps {
   onReveal: () => void;
-  onComplete: () => void;
 }
 
-export function ProductTransition({ onReveal, onComplete }: ProductTransitionProps) {
+export function ProductTransition({ onReveal }: ProductTransitionProps) {
   const [phase, setPhase] = useState<"enter" | "exit">("enter");
 
   useEffect(() => {
-    // 0.0s: Start slide in (0.4s duration)
-    // 0.2s: Letters start merging (duration 0.6s)
-    // 0.8s: Text fully formed. Hold.
-    // 1.0s: Fire onReveal to mount the ProductPage underneath
+    // 1.0s: Text fully forms, fire onReveal to mount the ProductPage underneath
     const holdTimer = setTimeout(() => {
       onReveal(); 
-      // 1.1s: Start slide out (0.4s duration)
+      // 1.1s: Start slide out of the black panels and text
       setTimeout(() => {
         setPhase("exit");
       }, 100);
     }, 1000);
 
-    // 1.6s: Entire transition is finished, unmount
-    const completeTimer = setTimeout(() => {
-      onComplete();
-    }, 1600);
-
     return () => {
       clearTimeout(holdTimer);
-      clearTimeout(completeTimer);
     };
-  }, [onReveal, onComplete]);
+  }, [onReveal]);
 
   // Buttery smooth, slightly aggressive cinematic easing
   const ease: any = [0.22, 1, 0.36, 1];
@@ -108,7 +98,7 @@ export function ProductTransition({ onReveal, onComplete }: ProductTransitionPro
             />
             
             {/* TYPOGRAPHY (SCATTER MERGE) */}
-            <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-center z-10 p-4 gap-2 md:gap-8">
+            <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-center z-10 p-4 gap-2 md:gap-8 mix-blend-difference">
               {/* Word 1: DAMAGED */}
               <div className="flex">
                 {text.split(" ")[0].split("").map((letter, i) => (
@@ -119,7 +109,7 @@ export function ProductTransition({ onReveal, onComplete }: ProductTransitionPro
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="text-[#fcfaf5] text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase font-sans leading-none inline-block"
+                    className="text-[#fcfaf5] text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase font-sans leading-none inline-block drop-shadow-2xl"
                   >
                     {letter}
                   </motion.span>
@@ -135,7 +125,7 @@ export function ProductTransition({ onReveal, onComplete }: ProductTransitionPro
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="text-[#fcfaf5] text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase font-sans leading-none inline-block"
+                    className="text-[#fcfaf5] text-[12vw] md:text-[8vw] font-black tracking-tighter uppercase font-sans leading-none inline-block drop-shadow-2xl"
                   >
                     {letter}
                   </motion.span>

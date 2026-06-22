@@ -246,7 +246,7 @@ export function LiquidBlobHero({ onScrollDown }: { onScrollDown?: () => void }) 
           src={EDITORIAL_IMAGES[imgIndex]}
           alt="DAMAGED GOODS editorial"
           className="absolute inset-0 w-full h-full object-cover"
-          initial={{ opacity: 0, scale: 1.06 }}
+          initial={{ opacity: imgIndex === 0 ? 1 : 0, scale: imgIndex === 0 ? 1 : 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, ease: "easeOut" }}
         />

@@ -54,6 +54,7 @@ function AppContent() {
   const { isCartOpen, setIsCartOpen, addItem } = useCartStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [transitioningProduct, setTransitioningProduct] = useState<Product | null>(null);
+  const [transitionOriginRect, setTransitionOriginRect] = useState<DOMRect | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   // Intro Animation States
@@ -124,7 +125,8 @@ function AppContent() {
     setIsScatterFinished(true);
   }, []);
 
-  const handleProductSelect = (product: Product) => {
+  const handleProductSelect = (product: Product, rect?: DOMRect) => {
+    if (rect) setTransitionOriginRect(rect);
     setTransitioningProduct(product);
   };
 
@@ -133,9 +135,7 @@ function AppContent() {
   return (
     <div
       ref={scrollContainerRef}
-      className={`selection:bg-white selection:text-black font-sans relative min-h-screen transition-colors duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isHovered ? "bg-[#ea3423] text-white" : "bg-[#050505] text-white"
-      }`}
+      className="selection:bg-white selection:text-black font-sans relative min-h-screen bg-[#050505] text-white transition-colors duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
     >
       <WebGLBackground />
       <CustomCursor />
@@ -188,7 +188,10 @@ function AppContent() {
       <div className="relative z-30 w-full flex flex-col">
         {isScatterFinished && isPodiumFinished && (
           <div className="w-full">
-            <OutfitReplica onProductClick={handleProductSelect} />
+            <OutfitReplica 
+          onProductClick={handleProductSelect} 
+          activeProductId={selectedProduct?.id || transitioningProduct?.id || null}
+        />
           </div>
         )}
       </div>
@@ -241,9 +244,12 @@ function AppContent() {
 
       {transitioningProduct && (
         <ProductTransition
+          product={transitioningProduct}
+          originRect={transitionOriginRect}
           onReveal={() => {
             setSelectedProduct(transitioningProduct);
             setTransitioningProduct(null);
+            setTransitionOriginRect(null);
           }}
         />
       )}
