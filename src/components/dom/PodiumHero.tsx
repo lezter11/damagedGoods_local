@@ -13,7 +13,7 @@ interface PodiumHeroProps {
 export function PodiumHero({ onComplete }: PodiumHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
-  
+
   // Use a mutable ref for scroll progress to avoid triggering React re-renders on every scroll tick.
   const scrollProgressRef = useRef<number>(0);
   const textRef = useRef<HTMLDivElement>(null);
@@ -27,13 +27,13 @@ export function PodiumHero({ onComplete }: PodiumHeroProps) {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=6000", // 6000px of scrolling for the vast journey
+        end: "+=1600", // 3000px of scrolling for the vast journey
         pin: true,
         scrub: 0.1, // very slight scrub smoothing
         onUpdate: (self) => {
           const progress = self.progress;
           scrollProgressRef.current = progress;
-          
+
           // Phase 2: Attraction (10% to 30%) - Fade out the intro text
           if (textRef.current) {
             if (progress >= 0.1 && progress <= 0.3) {
@@ -80,11 +80,11 @@ export function PodiumHero({ onComplete }: PodiumHeroProps) {
           <PortalScene scrollProgressRef={scrollProgressRef} />
         </div>
 
-      {/* Floating Header specifically for the Landing State (Phase 1) */}
-      <div ref={textRef} className="absolute top-0 left-0 w-full p-8 z-20 pointer-events-none flex justify-between items-start transition-opacity will-change-opacity">
-        <div className="text-black font-bold tracking-tighter text-2xl mix-blend-difference" style={{ color: 'white' }}>
-          DAMAGED GOODS
-        </div>
+        {/* Floating Header specifically for the Landing State (Phase 1) */}
+        <div ref={textRef} className="absolute top-0 left-0 w-full p-8 z-20 pointer-events-none flex justify-between items-start transition-opacity will-change-opacity">
+          <div className="text-black font-bold tracking-tighter text-2xl mix-blend-difference" style={{ color: 'white' }}>
+            DAMAGED GOODS
+          </div>
         </div>
       </div>
     </div>
