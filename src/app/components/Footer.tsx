@@ -110,24 +110,24 @@ export function Footer() {
       <CTAPanel />
 
       {/* ── LINKS & INFO GRID ── */}
-      <div className="px-4 sm:px-6 md:px-8 py-10 max-w-[1400px] mx-auto border-t border-neutral-900">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-x-6 gap-y-8 items-start mb-8">
+      <div className="px-4 sm:px-6 md:px-8 py-12 md:py-16 max-w-[1400px] mx-auto border-t border-neutral-900">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 gap-y-10 items-start mb-10">
 
           {/* BRAND LEDGER & NEWSLETTER */}
           <div className="col-span-2 md:col-span-1 flex flex-col justify-start">
-            <h3 className="text-[10px] font-black tracking-[0.25em] uppercase mb-1.5 text-white">
+            <h3 className="text-[11px] font-black tracking-[0.25em] uppercase mb-2 text-white">
               DAMAGED GOODS
             </h3>
-            <p className="text-[9px] text-neutral-500 font-normal leading-[1.4] mb-3">
+            <p className="text-[10px] text-neutral-500 font-normal leading-relaxed mb-4">
               Modern aesthetics through premium design.
             </p>
 
-            <div className="flex gap-3 mb-3 items-center">
+            <div className="flex gap-4 mb-4 items-center">
               <a href="#" className="text-neutral-500 hover:text-white transition-colors">
-                <Instagram className="w-3 h-3" />
+                <Instagram className="w-4 h-4" />
               </a>
               <a href="#" className="text-neutral-500 hover:text-white transition-colors">
-                <Twitter className="w-3 h-3" />
+                <Twitter className="w-4 h-4" />
               </a>
             </div>
 
@@ -137,9 +137,9 @@ export function Footer() {
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="w-full bg-transparent text-neutral-400 text-[9px] px-1.5 py-0.5 focus:outline-none min-w-0 placeholder:text-neutral-700"
+                  className="w-full bg-transparent text-neutral-400 text-[10px] px-2 py-1 focus:outline-none min-w-0 placeholder:text-neutral-700"
                 />
-                <button className="bg-white text-black text-[8px] font-black tracking-wider uppercase px-1.5 py-0.5 hover:bg-neutral-200 transition-colors shrink-0">
+                <button className="bg-white text-black text-[9px] font-black tracking-wider uppercase px-2 py-1 hover:bg-neutral-200 transition-colors shrink-0">
                   SUB
                 </button>
               </div>
@@ -148,8 +148,8 @@ export function Footer() {
 
           {/* COLLECTIONS */}
           <div className="col-span-1">
-            <p className="text-[8px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-2">COLLECTIONS</p>
-            <ul className="space-y-1 text-[9px] text-neutral-500 font-medium">
+            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">COLLECTIONS</p>
+            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
               {["Outerwear", "Tops", "Bottoms", "Footwear", "Accessories", "Archive"].map((item) => (
                 <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
               ))}
@@ -158,8 +158,8 @@ export function Footer() {
 
           {/* SUPPORT */}
           <div className="col-span-1">
-            <p className="text-[8px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-2">SUPPORT</p>
-            <ul className="space-y-1 text-[9px] text-neutral-500 font-medium">
+            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">SUPPORT</p>
+            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
               {["FAQ", "Shipping & Returns", "Size Guide", "Track Order", "Contact Us"].map((item) => (
                 <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
               ))}
@@ -168,8 +168,8 @@ export function Footer() {
 
           {/* COMPANY */}
           <div className="col-span-1">
-            <p className="text-[8px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-2">COMPANY</p>
-            <ul className="space-y-1 text-[9px] text-neutral-500 font-medium">
+            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">COMPANY</p>
+            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
               {["Our Story", "Manifesto", "Philosophy", "Sustainability"].map((item) => (
                 <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
               ))}
@@ -178,8 +178,8 @@ export function Footer() {
 
           {/* LEGAL */}
           <div className="col-span-1">
-            <p className="text-[8px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-2">LEGAL</p>
-            <ul className="space-y-1 text-[9px] text-neutral-500 font-medium">
+            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">LEGAL</p>
+            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
               {["Privacy Policy", "Terms", "Refund"].map((item) => (
                 <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
               ))}
@@ -187,38 +187,38 @@ export function Footer() {
           </div>
 
           {/* LATEST DROP PREVIEW */}
-          <div className="col-span-1 flex flex-col md:items-end">
-            <div className="w-full max-w-[70px] md:ml-auto">
-              <p className="text-[8px] font-black tracking-[0.15em] uppercase text-neutral-500 mb-1.5 md:text-right">LATEST DROP</p>
-              <div className="w-full aspect-[4/5] bg-neutral-900 overflow-hidden border border-neutral-950 mb-1">
+          <div className="col-span-2 md:col-span-1 flex flex-col md:items-end">
+            <div className="w-full max-w-[80px] md:ml-auto">
+              <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-450 mb-2 md:text-right">LATEST DROP</p>
+              <div className="w-full aspect-[4/5] bg-neutral-900 overflow-hidden border border-neutral-950 mb-1.5">
                 <img
                   src={products[products.length - 1]?.image || "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=400&auto=format&fit=crop"}
                   alt="Drop Snapshot"
                   className="w-full h-full object-cover filter contrast-[1.05] brightness-90"
                 />
               </div>
-              <a href="#" className="text-[8px] font-black tracking-wider text-neutral-300 hover:text-white transition-colors flex items-center gap-0.5 md:justify-end w-full group">
+              <a href="#" className="text-[9px] font-black tracking-wider text-neutral-300 hover:text-white transition-colors flex items-center gap-0.5 md:justify-end w-full group">
                 <span>SHOP</span>
-                <ArrowRight className="w-2 h-2 group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
           </div>
         </div>
 
         {/* UTILITY FOOTER LINE */}
-        <div className="border-t border-neutral-950 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[8px] tracking-widest text-neutral-500 uppercase font-medium">
+        <div className="border-t border-neutral-950 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-[9px] tracking-widest text-neutral-500 uppercase font-medium">
           <div>
             <span className="font-bold text-neutral-400">© 2026 DAMAGED GOODS.</span> ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-4 text-neutral-600">
             <div className="flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-emerald-500" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span className="text-neutral-400">ONLINE</span>
             </div>
             <span>WORLDWIDE SHIPPING</span>
             <span className="text-neutral-400 font-bold">IN / INR ▼</span>
           </div>
-          <div className="flex items-center gap-2.5 font-sans text-neutral-600 text-[8px] tracking-normal">
+          <div className="flex items-center gap-3 font-sans text-neutral-600 text-[9px] tracking-normal">
             <span className="text-neutral-500 font-bold">VISA</span>
             <span className="font-bold text-neutral-500">UPI</span>
             <span className="text-neutral-500 font-bold">PAYPAL</span>

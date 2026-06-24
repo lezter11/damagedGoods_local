@@ -92,12 +92,17 @@ function buildSmoothPath(pts: [number, number][]): string {
   return d;
 }
 
+import img1 from "../../imports/img1.jpg";
+import img2 from "../../imports/img2.jpg";
+import img3 from "../../imports/img3.jpg";
+import img4 from "../../imports/img4.jpg";
+
 // ─── EDITORIAL IMAGES ─────────────────────────────────────────────────────────
 const EDITORIAL_IMAGES = [
-  "https://images.unsplash.com/photo-1764787016268-31d48b3978f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-  "https://images.unsplash.com/photo-1768489038056-85fa62638335?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-  "https://images.unsplash.com/photo-1736555142217-916540c7f1b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-  "https://images.unsplash.com/photo-1765445665914-918f669a6205?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  img1,
+  img2,
+  img3,
+  img4,
 ];
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────

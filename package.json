@@ -7,7 +7,8 @@
     "build": "vite build",
     "dev": "vite",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -78,12 +79,18 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "4.7.0",
     "gh-pages": "^6.3.0",
+    "jsdom": "^29.1.1",
     "playwright": "^1.61.0",
+    "sharp": "^0.35.2",
     "tailwindcss": "4.1.12",
     "typescript": "^6.0.3",
-    "vite": "^6.4.2"
+    "vite": "^6.4.2",
+    "vitest": "^4.1.9"
   },
   "pnpm": {
     "overrides": {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GlassPanel } from "./GlassPanel";
-import { ShoppingBag, Search, Menu, X, ArrowRight, Sparkles } from "lucide-react";
+import { ShoppingBag, Search, Menu, X, ArrowRight, Sparkles, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { products } from "../data/products";
 import type { Product } from "./ProductPage";
 import { useCartStore } from "../../store/useCartStore";
+import { useWishlistStore } from "../../store/useWishlistStore";
 
 interface NavbarProps {
   onSearchClick?: () => void;
@@ -17,6 +18,7 @@ interface NavbarProps {
 export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = true }: NavbarProps) {
   const { items } = useCartStore();
   const cartItemsCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const { items: wishlistItems, setIsWishlistOpen } = useWishlistStore();
 
   const navLinks = ["Collection", "Drops", "About", "Orders"];
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
@@ -232,6 +234,19 @@ export function Navbar({ onSelectProduct, onCartClick, onMenuClick, showLogo = t
                   {cartItemsCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-black text-white text-[8px] font-black px-1 animate-scaleIn">
                       {cartItemsCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setIsWishlistOpen(true)}
+                  className="relative flex items-center justify-center group focus:outline-none cursor-pointer p-1 rounded-full hover:bg-black/5 transition-colors"
+                  aria-label="Open wishlist"
+                >
+                  <Heart className="w-4 sm:w-[18px] h-4 sm:h-[18px] text-black/80 group-hover:text-black transition-colors" strokeWidth={1.5} />
+                  {wishlistItems.length > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-black text-white text-[8px] font-black px-1 animate-scaleIn">
+                      {wishlistItems.length}
                     </span>
                   )}
                 </button>

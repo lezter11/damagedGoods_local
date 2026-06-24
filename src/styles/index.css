@@ -3,6 +3,7 @@
 @import "./theme.css";
 @import "./outfit.css";
 
+
 @layer utilities {
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
@@ -34,6 +35,206 @@ html.lenis, html.lenis body {
 }
 
 html, body {
-  overflow-y: auto !important;
+  overflow-y: auto;
   overflow-x: hidden !important;
+}
+
+html.dg-scroll-locked, html.dg-scroll-locked body {
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+:root {
+  --dg-black: #f3eee7;
+  --dg-ink: #ffffff;
+  --dg-paper: #050505;
+  --dg-bone: #1a1a1a;
+  --dg-red: #d51d16;
+  --dg-acid: #c7ff38;
+  --dg-muted: rgba(243, 238, 231, 0.58);
+  --dg-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dg-ease-hard: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--dg-paper);
+}
+
+body {
+  margin: 0;
+  background: var(--dg-paper);
+  color: var(--dg-black);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--dg-red);
+  color: white;
+}
+
+.dg-noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.28) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 60%, rgba(0,0,0,0.5) 0 1px, transparent 1.5px);
+  background-size: 7px 7px, 11px 11px;
+}
+
+.dg-display {
+  letter-spacing: 0;
+  text-transform: uppercase;
+  font-weight: 950;
+  line-height: 0.82;
+}
+
+.dg-kicker {
+  font-family: "font", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dg-media {
+  overflow: hidden;
+  background: #111;
+  isolation: isolate;
+}
+
+.dg-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.dg-link-line {
+  position: relative;
+}
+
+.dg-link-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.25rem;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: right;
+  background: currentColor;
+  transition: transform 0.55s var(--dg-ease);
+}
+
+.dg-link-line:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.dg-corners::before,
+.dg-corners::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.dg-corners::before {
+  top: 12px;
+  left: 12px;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+.dg-corners::after {
+  right: 12px;
+  bottom: 12px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.dg-split-line {
+  display: block;
+  overflow: hidden;
+}
+
+.dg-split-line > span {
+  display: block;
+  transform: translateY(112%);
+  will-change: transform;
+}
+
+.dg-reveal,
+.dg-parallax,
+.dg-scale-media,
+.dg-product-card {
+  will-change: transform, opacity;
+}
+
+.dg-marquee {
+  display: flex;
+  width: max-content;
+  animation: dg-marquee 28s linear infinite;
+}
+
+@keyframes dg-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-marquee {
+    animation: none;
+  }
+
+  .dg-reveal,
+  .dg-parallax,
+  .dg-scale-media,
+  .dg-product-card,
+  .dg-split-line > span {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Custom PDP Layout Styles to guarantee 50-50 split screen display */
+.pdp-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+  width: 100%;
+}
+
+.pdp-sticky-sidebar {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .pdp-main-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3rem !important;
+  }
+  .pdp-sticky-sidebar {
+    position: sticky !important;
+    top: 6rem !important;
+  }
 }

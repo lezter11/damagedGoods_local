@@ -1,22 +1,30 @@
 import type { Product } from "../components/ProductPage";
 
+import aetherialShell from "../../imports/Jacket_homepage_high_pixel.webp";
+import priestHood from "../../imports/scatter/pimp_priest_product_image.webp";
+import phaseShiftCargo from "../../imports/scatter/actively_product_image.webp";
+import synapseBase from "../../imports/scatter/Lips_holy_product_image.webp";
+import adoredDiscarded from "../../imports/scatter/Adored_discareded_product_image.webp";
+import voidWalkers from "../../imports/scatter/Sin_looks_better_product_image.webp";
+import zipMechanism from "../../imports/img1.webp";
+
 export const products: Product[] = [
   {
     id: 1,
     name: "Aetherial Shell",
     price: "$450",
     category: "Outerwear",
-    image: "https://images.unsplash.com/photo-1764787016268-31d48b3978f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: aetherialShell,
     year: "2025",
     collection: "AW-25",
     cardType: "hero"
   },
   {
     id: 2,
-    name: "Hardware Patch",
-    price: "$45",
-    category: "Accessories",
-    image: "https://images.unsplash.com/photo-1621077759247-49f99bc7df19?q=80&w=800&auto=format&fit=crop",
+    name: "Priest Hood",
+    price: "$210",
+    category: "Hoodies",
+    image: priestHood,
     year: "2025",
     collection: "AW-25",
     cardType: "micro"
@@ -26,27 +34,27 @@ export const products: Product[] = [
     name: "Phase Shift Cargo",
     price: "$280",
     category: "Bottoms",
-    image: "https://images.unsplash.com/photo-1768489038056-85fa62638335?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: phaseShiftCargo,
     year: "2025",
     collection: "AW-25",
     cardType: "portrait"
   },
   {
     id: 4,
-    name: "Synapse Base",
+    name: "Synapse Base Layer",
     price: "$150",
     category: "Tops",
-    image: "https://images.unsplash.com/photo-1765445665914-918f669a6205?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: synapseBase,
     year: "2025",
     collection: "AW-25",
     cardType: "feature"
   },
   {
     id: 5,
-    name: "Ballistic Nylon",
-    price: "$N/A",
-    category: "Material Study",
-    image: "https://images.unsplash.com/photo-1542614471-001ccf2bb60b?q=80&w=1600&auto=format&fit=crop",
+    name: "Adored Discarded Tee",
+    price: "$120",
+    category: "Tops",
+    image: adoredDiscarded,
     year: "2025",
     collection: "AW-25",
     cardType: "landscape"
@@ -56,7 +64,7 @@ export const products: Product[] = [
     name: "Void Walkers",
     price: "$320",
     category: "Footwear",
-    image: "https://images.unsplash.com/photo-1736555142217-916540c7f1b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: voidWalkers,
     year: "2025",
     collection: "AW-25",
     cardType: "portrait"
@@ -66,7 +74,7 @@ export const products: Product[] = [
     name: "Zip Mechanism",
     price: "$N/A",
     category: "Hardware",
-    image: "https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=800&auto=format&fit=crop",
+    image: zipMechanism,
     year: "2025",
     collection: "AW-25",
     cardType: "micro"

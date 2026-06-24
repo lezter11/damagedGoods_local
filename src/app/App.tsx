@@ -3,6 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { ProductPage, type Product } from "./components/ProductPage";
 import { CartPage } from "./components/CartPage";
 import { MenuOverlay } from "./components/MenuOverlay";
+import { WishlistPage } from "./components/WishlistPage";
 import { ProductTransition } from "./components/ProductTransition";
 import { ScatterReveal } from "./components/ScatterReveal";
 import { OutfitReplica } from "./components/OutfitReplica";
@@ -13,6 +14,7 @@ import { CheckoutModal } from "./components/CheckoutModal";
 import { motion, AnimatePresence } from "motion/react";
 import { useUIStore } from "../store/useUIStore";
 import { useCartStore } from "../store/useCartStore";
+import { useWishlistStore } from "../store/useWishlistStore";
 
 // GSAP + Lenis Integration Requirements
 import gsap from "gsap";
@@ -52,6 +54,7 @@ export default function App() {
 function AppContent() {
   const { isMenuOpen, setIsMenuOpen, hoveredProduct } = useUIStore();
   const { isCartOpen, setIsCartOpen, addItem } = useCartStore();
+  const { isWishlistOpen, setIsWishlistOpen } = useWishlistStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [transitioningProduct, setTransitioningProduct] = useState<Product | null>(null);
   const [transitionOriginRect, setTransitionOriginRect] = useState<DOMRect | null>(null);
@@ -114,12 +117,12 @@ function AppContent() {
 
   // Sync scroll-lock layout changes when modal menus overlay
   useEffect(() => {
-    if (isMenuOpen || isCartOpen || selectedProduct || isCheckoutOpen) {
+    if (isMenuOpen || isCartOpen || selectedProduct || isCheckoutOpen || isWishlistOpen) {
       lenisRef.current?.stop();
     } else {
       lenisRef.current?.start();
     }
-  }, [isMenuOpen, isCartOpen, selectedProduct, isCheckoutOpen]);
+  }, [isMenuOpen, isCartOpen, selectedProduct, isCheckoutOpen, isWishlistOpen]);
 
   const handleScatterComplete = React.useCallback(() => {
     setIsScatterFinished(true);
@@ -231,6 +234,15 @@ function AppContent() {
               setIsCartOpen(false);
               setIsCheckoutOpen(true);
             }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isWishlistOpen && (
+          <WishlistPage 
+            onClose={() => setIsWishlistOpen(false)} 
+            onSelectProduct={(p) => handleProductSelect(p as any)}
           />
         )}
       </AnimatePresence>

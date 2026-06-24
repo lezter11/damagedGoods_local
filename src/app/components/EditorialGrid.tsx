@@ -1,180 +1,113 @@
 import React, { useEffect, useRef } from "react";
-import { motion } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 import { products } from "../data/products";
+import type { Product } from "./ProductPage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 interface EditorialGridProps {
-  onProductClick?: (p: any) => void;
+  onProductClick?: (p: Product, rect: DOMRect) => void;
+  activeProductId?: number | null;
 }
 
-// Each product gets a layout descriptor for the asymmetric editorial feel
-const LAYOUT_CONFIGS = [
-  { gridClass: "col-span-12 md:col-span-7", aspect: "aspect-[4/5]", offsetClass: "md:mt-0" },
-  { gridClass: "col-span-12 md:col-span-5", aspect: "aspect-[3/4]", offsetClass: "md:mt-24" },
-  { gridClass: "col-span-12 md:col-span-5", aspect: "aspect-[3/4]", offsetClass: "md:mt-0" },
-  { gridClass: "col-span-12 md:col-span-7", aspect: "aspect-[4/5]", offsetClass: "md:mt-16" },
+const layouts = [
+  { className: "md:col-span-6", aspect: "aspect-[4/5]", offset: "md:mt-0" },
 ];
 
-export function EditorialGrid({ onProductClick }: EditorialGridProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+export function EditorialGrid({ onProductClick, activeProductId }: EditorialGridProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      itemRefs.current.forEach((el, i) => {
-        if (!el) return;
-        gsap.fromTo(
-          el,
-          {
-            y: 80,
-            opacity: 0,
-            clipPath: "inset(0 0 100% 0)",
-          },
-          {
-            y: 0,
-            opacity: 1,
-            clipPath: "inset(0 0 0% 0)",
-            duration: 1.1,
-            ease: "power3.out",
-            delay: i * 0.12,
-            scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      });
+    gsap.registerPlugin(ScrollTrigger);
 
-      // Section header entrance
-      gsap.fromTo(
-        ".editorial-header",
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>(".catalog-card").forEach((card, index) => {
+        const image = card.querySelector("img");
+        gsap.fromTo(card, { y: 90, opacity: 0, clipPath: "inset(12% 0 12% 0)" }, {
           y: 0,
-          duration: 0.9,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ".editorial-header",
-            start: "top 90%",
-          },
+          opacity: 1,
+          clipPath: "inset(0% 0 0% 0)",
+          duration: 1.1,
+          ease: "power3.out",
+          delay: (index % 2) * 0.08,
+          scrollTrigger: { trigger: card, start: "top 88%" },
+        });
+        if (image) {
+          gsap.fromTo(image, { yPercent: -8 }, {
+            yPercent: 8,
+            ease: "none",
+            scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: true },
+          });
         }
-      );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
+  const handleClick = (e: React.MouseEvent, product: Product, index: number) => {
+    e.preventDefault();
+    if (onProductClick && imageRefs.current[index]) {
+      const rect = imageRefs.current[index]!.getBoundingClientRect();
+      onProductClick(product, rect);
+    }
+  };
+
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full bg-[#faf9f5] py-24 md:py-40"
-    >
-      {/* ── Section Header ── */}
-      <div className="editorial-header px-6 md:px-12 lg:px-16 mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-black/10 pb-8">
-        <div>
-          <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-400 mb-2">
-            SPECIFICATION CATALOG // AW-25
-          </p>
-          <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight leading-none text-black">
-            ALL ITEMS
-          </h2>
-        </div>
-        <div className="flex items-center gap-6">
-          <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-neutral-400">
-            {products.length} ARCHIVE UNITS
-          </span>
-          <div className="w-8 h-[1px] bg-black/20" />
-          <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#c00000]">
-            SELECT TO ACQUIRE
-          </span>
-        </div>
-      </div>
+    <section id="catalog" ref={sectionRef} className="relative bg-[var(--dg-paper)] px-4 pt-16 pb-12 text-[var(--dg-black)] md:px-8 md:pt-24 md:pb-16">
+      <div className="mx-auto max-w-[1800px]">
 
-      {/* ── Asymmetric Product Grid ── */}
-      <div className="px-6 md:px-12 lg:px-16">
-        <div className="grid grid-cols-12 gap-x-4 md:gap-x-8 gap-y-16 md:gap-y-8 items-start">
-          {products.map((product, i) => {
-            const layout = LAYOUT_CONFIGS[i % LAYOUT_CONFIGS.length];
+        <div className="grid grid-cols-12 gap-x-4 gap-y-16 md:gap-x-8 md:gap-y-10">
+          {products.map((product, index) => {
+            const layout = layouts[index % layouts.length];
+            const isClicked = activeProductId === product.id;
+            const isDimmed = activeProductId != null && !isClicked;
+
             return (
-              <div
+              <button
                 key={product.id}
-                ref={(el) => { itemRefs.current[i] = el; }}
-                className={`${layout.gridClass} ${layout.offsetClass} group relative cursor-none`}
-                onClick={() => onProductClick?.(product)}
+                onClick={(e) => handleClick(e, product, index)}
+                className={`catalog-card group col-span-12 ${layout.className} ${layout.offset} cursor-pointer text-left transition-all duration-700 ${isDimmed ? "opacity-20 blur-sm pointer-events-none" : "opacity-100"}`}
               >
-                {/* Image Container */}
-                <div
-                  className={`relative w-full ${layout.aspect} overflow-hidden bg-neutral-100 mb-5`}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05] filter grayscale group-hover:grayscale-0 contrast-[1.02]"
+                <div className={`dg-media relative ${layout.aspect} border border-white/10 bg-[#111111] text-white overflow-hidden`}>
+                  <img 
+                    ref={(el) => { imageRefs.current[index] = el; }}
+                    src={product.image} 
+                    alt={product.name} 
+                    loading="lazy"
+                    className={`h-[116%] w-full object-cover grayscale brightness-90 contrast-110 transition-all duration-[1200ms] ease-[var(--dg-ease)] group-hover:scale-105 group-hover:grayscale-0 ${isClicked ? "opacity-0" : "opacity-100"}`} 
                   />
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700" />
-
-                  {/* View tag */}
-                  <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="font-mono text-[8px] tracking-[0.2em] uppercase bg-black text-white px-2 py-1">
-                      VIEW //
-                    </span>
+                  <div className={`absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/18 ${isClicked ? "opacity-0" : ""}`} />
+                  <div className={`absolute left-4 top-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.18em] text-white/0 transition-colors duration-500 group-hover:text-white/72 ${isClicked ? "opacity-0" : ""}`}>
+                    <span>View piece</span>
+                    <ArrowUpRight className="h-3 w-3" />
                   </div>
-
-                  {/* Index number */}
-                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="font-mono text-[9px] tracking-[0.15em] text-white/70">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
+                  <span className={`absolute bottom-4 right-4 text-[11px] font-black uppercase tracking-[0.2em] text-white/45 ${isClicked ? "opacity-0" : ""}`}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
 
-                {/* Product Meta */}
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex flex-col gap-0.5">
-                    <p className="font-mono text-[8px] tracking-[0.2em] uppercase text-neutral-400">
-                      {product.category} // REF-{String(product.id).padStart(3, "0")}
-                    </p>
-                    <h3 className="font-black text-sm md:text-base uppercase tracking-tight text-black group-hover:text-[#c00000] transition-colors duration-300">
+                <div className={`mt-5 flex items-start justify-between gap-5 border-t border-black/12 pt-4 transition-opacity duration-300 ${isClicked ? "opacity-0" : "opacity-100"}`}>
+                  <div>
+                    <p className="dg-kicker mb-2 text-black/35">{product.category} / REF-{String(product.id).padStart(3, "0")}</p>
+                    <h3 className="text-2xl font-black uppercase leading-none tracking-tight transition-colors duration-300 group-hover:text-[var(--dg-red)] md:text-4xl">
                       {product.name}
                     </h3>
                   </div>
-                  <div className="flex flex-col items-end gap-0.5 shrink-0">
-                    <span className="font-mono text-xs font-bold text-neutral-600 group-hover:text-black transition-colors">
-                      {product.price}
-                    </span>
-                    <span className="font-mono text-[7px] tracking-[0.15em] text-neutral-400 uppercase">
-                      + SHIPPING
-                    </span>
-                  </div>
+                  <span className="mt-1 shrink-0 text-sm font-black">{product.price}</span>
                 </div>
-
-                {/* Bottom border line that expands on hover */}
-                <div className="mt-4 h-[1px] bg-black/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[#c00000] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                </div>
-              </div>
+              </button>
             );
           })}
         </div>
-      </div>
 
-      {/* ── Bottom CTA Row ── */}
-      <div className="px-6 md:px-12 lg:px-16 mt-24 pt-8 border-t border-black/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-400">
-          END OF CATALOG // {products.length} ITEMS DISPLAYED
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#c00000]" />
-          <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-400">
-            MORE DROPS INCOMING
-          </p>
+        <div className="mt-24 flex flex-col gap-6 border-t border-black/12 pt-8 md:flex-row md:items-center md:justify-between">
+          <p className="dg-kicker text-black/40">End of catalog / {products.length} pieces shown</p>
+          <a href="#page" className="group flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-black/60 transition-colors hover:text-black">
+            Replay experience
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+          </a>
         </div>
       </div>
     </section>

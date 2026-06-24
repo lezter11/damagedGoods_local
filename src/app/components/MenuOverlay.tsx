@@ -82,9 +82,11 @@ export function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
                 const isAnyHovered = activeIndex !== null;
 
                 return (
-                  <div
+                  <a
                     key={item.id}
-                    className="relative border-b border-neutral-900 py-6 sm:py-8 cursor-pointer overflow-hidden group"
+                    href={`#${item.title.toLowerCase()}`}
+                    onClick={() => onClose()}
+                    className="relative border-b border-neutral-900 py-6 sm:py-8 cursor-pointer overflow-hidden group block"
                     onMouseEnter={() => {
                       setActiveImage(item.img);
                       setActiveIndex(index);
@@ -134,7 +136,7 @@ export function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
                         />
                       </div>
                     </div>
-                  </div>
+                  </a>
                 );
               })}
             </nav>
