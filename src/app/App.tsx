@@ -8,6 +8,7 @@ import { ProductTransition } from "./components/ProductTransition";
 import { ScatterReveal } from "./components/ScatterReveal";
 import { OutfitReplica } from "./components/OutfitReplica";
 import { PodiumHero } from "../components/dom/PodiumHero";
+import { IntroReveal } from "./components/IntroReveal/IntroReveal";
 import { CustomCursor } from "./components/CustomCursor";
 import { WebGLBackground } from "./components/WebGLBackground";
 import { CheckoutModal } from "./components/CheckoutModal";
@@ -61,6 +62,7 @@ function AppContent() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   // Intro Animation States
+  const [isCinematicIntroFinished, setIsCinematicIntroFinished] = useState(false);
   const USE_SCATTER_REVEAL = false; // Flag to toggle animation (disabled for now)
   const USE_PODIUM_HERO = true;
   const [isScatterTriggered, setIsScatterTriggered] = useState(false);
@@ -115,14 +117,14 @@ function AppContent() {
     };
   }, []);
 
-  // Sync scroll-lock layout changes when modal menus overlay
+  // Sync scroll-lock layout changes when modal menus overlay or intro is playing
   useEffect(() => {
-    if (isMenuOpen || isCartOpen || selectedProduct || isCheckoutOpen || isWishlistOpen) {
+    if (!isCinematicIntroFinished || isMenuOpen || isCartOpen || selectedProduct || isCheckoutOpen || isWishlistOpen) {
       lenisRef.current?.stop();
     } else {
       lenisRef.current?.start();
     }
-  }, [isMenuOpen, isCartOpen, selectedProduct, isCheckoutOpen, isWishlistOpen]);
+  }, [isCinematicIntroFinished, isMenuOpen, isCartOpen, selectedProduct, isCheckoutOpen, isWishlistOpen]);
 
   const handleScatterComplete = React.useCallback(() => {
     setIsScatterFinished(true);
@@ -142,6 +144,10 @@ function AppContent() {
     >
       <WebGLBackground />
       <CustomCursor />
+
+      {!isCinematicIntroFinished && (
+        <IntroReveal onComplete={() => setIsCinematicIntroFinished(true)} />
+      )}
 
       {/* FIXED NAVIGATION INTERFACE CONTAINER */}
       <div className="fixed top-0 left-0 w-full z-50 pointer-events-auto">
