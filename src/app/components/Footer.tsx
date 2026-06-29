@@ -1,230 +1,133 @@
-import React, { useRef } from 'react';
-import { Instagram, Twitter, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { products } from '../data/products';
-import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
+import React, { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// ─── 3D TILT CTA PANEL ───────────────────────────────────────────────────────
-function CTAPanel() {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
+gsap.registerPlugin(ScrollTrigger);
 
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-12, 12]), { stiffness: 150, damping: 20 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
-
-  const handleMouseLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
-  return (
-    <div
-      className="w-full bg-[#0c0c0c] py-28 md:py-40 px-6 md:px-12 lg:px-16 overflow-hidden"
-      style={{ perspective: "1200px" }}
-    >
-      {/* Meta ticker row */}
-      <div className="flex justify-between items-center mb-10">
-        <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-600">
-          WORK WITH US // COLLABORATIONS OPEN
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#c00000] animate-pulse" />
-          <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-600">
-            ACCEPTING BRIEFS
-          </p>
-        </div>
-      </div>
-
-      {/* 3D Tilt CTA container */}
-      <motion.div
-        ref={panelRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative w-full border border-neutral-800/60 p-8 md:p-16 group cursor-none overflow-hidden"
-      >
-        {/* Red accent grid lines */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-5"
-          style={{
-            backgroundImage:
-              "linear-gradient(#c00000 1px, transparent 1px), linear-gradient(90deg, #c00000 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Corner markers */}
-        <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-[#c00000]/60" />
-        <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-[#c00000]/60" />
-        <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-[#c00000]/60" />
-        <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-[#c00000]/60" />
-
-        {/* Hover fill animation */}
-        <div className="absolute inset-0 bg-[#c00000] scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" />
-
-        {/* CTA text */}
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-          <div>
-            <h2
-              className="font-black uppercase leading-none text-white group-hover:text-[#0c0c0c] transition-colors duration-500"
-              style={{
-                fontSize: "clamp(2.5rem, 8vw, 10rem)",
-                letterSpacing: "-0.04em",
-                lineHeight: 0.9,
-              }}
-            >
-              LET'S BUILD
-              <br />
-              <span className="text-[#c00000] group-hover:text-[#0c0c0c] transition-colors duration-500">
-                YOUR VISION
-              </span>
-            </h2>
-            <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-500 group-hover:text-[#0c0c0c]/60 transition-colors duration-500 mt-6">
-              // WORK WITH US // PARTNERSHIPS // EDITORIAL COLLABS //
-            </p>
-          </div>
-          <div className="shrink-0">
-            <button className="flex items-center gap-3 bg-white text-black group-hover:bg-[#0c0c0c] group-hover:text-white transition-colors duration-500 px-6 py-4 font-black uppercase tracking-[0.15em] text-xs">
-              CONTACT
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-// ─── MAIN FOOTER ──────────────────────────────────────────────────────────────
 export function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+  const parallaxRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    let ctx = gsap.context(() => {
+      // Fade upward into view
+      gsap.fromTo(
+        footerRef.current,
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.4,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: 'top 95%',
+          },
+        }
+      );
+
+      // Subtle parallax on massive typography
+      if (parallaxRef.current) {
+        gsap.to(parallaxRef.current, {
+          y: -20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: 'top bottom',
+            end: 'bottom bottom',
+            scrub: true,
+          },
+        });
+      }
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <footer className="w-full bg-black text-white pointer-events-auto relative z-10 font-sans border-t border-neutral-900 selection:bg-neutral-800">
+    <div className="w-full bg-[#0a0a0a] px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6 pt-24 relative z-20">
+      <footer 
+        ref={footerRef}
+        className="relative w-full bg-[#4A0D12] text-[#F4F1EC] font-sans selection:bg-[#F4F1EC] selection:text-[#4A0D12] overflow-hidden rounded-[30px] md:rounded-[40px] min-h-[85vh] flex flex-col justify-between pt-16 px-6 sm:px-10 md:pt-20 md:px-16 lg:px-24"
+      >
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start gap-16 relative z-10 w-full">
+          
+          {/* Brand Left */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+            {/* Logo Graphic Placeholder (Inspired by screenshot's 2x2 grid) */}
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-transparent grid grid-cols-2 grid-rows-2 gap-[2px] flex-shrink-0">
+              <div className="bg-[#F4F1EC]"></div>
+              <div className="bg-[#F4F1EC] rounded-full"></div>
+              <div className="bg-transparent border-[3px] border-[#F4F1EC] rounded-bl-full"></div>
+              <div className="bg-[#F4F1EC] rounded-br-[10px] bg-[repeating-linear-gradient(45deg,transparent,transparent_3px,#4A0D12_3px,#4A0D12_6px)]"></div>
+            </div>
+            
+            <div className="flex flex-col">
+              <h2 className="text-xl md:text-2xl font-bold tracking-tight mb-1 text-white">
+                Damaged Goods
+              </h2>
+              <p className="text-sm md:text-[15px] text-[#F4F1EC] font-medium leading-snug max-w-[280px]">
+                A premium curated vintage marketplace built for people who value history over hype.
+              </p>
+            </div>
+          </div>
 
-      {/* ── 3D CTA HERO PANEL ── */}
-      <CTAPanel />
+          {/* Links Right */}
+          <div className="grid grid-cols-2 gap-x-12 md:gap-x-24 gap-y-4 text-[13px] font-medium text-[#F4F1EC]">
+            {/* Column 1 */}
+            <ul className="flex flex-col gap-3.5">
+              {['Shop', 'New Arrivals', 'Collections', 'Archive', 'Brands', 'Journal', 'Gift Cards'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="hover:text-white transition-colors">{link}</a>
+                </li>
+              ))}
+            </ul>
+            {/* Column 2 */}
+            <ul className="flex flex-col gap-3.5">
+              {['Track Order', 'Shipping & Returns', 'Size Guide', 'Contact', 'Support', 'Collaborating with us'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="hover:text-white transition-colors">{link}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-      {/* ── LINKS & INFO GRID ── */}
-      <div className="px-4 sm:px-6 md:px-8 py-12 md:py-16 max-w-[1400px] mx-auto border-t border-neutral-900">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 gap-y-10 items-start mb-10">
+        {/* Middle Section (Contact Strip & Massive Text) */}
+        <div className="flex flex-col w-full relative z-10 mt-auto pt-24 md:pt-32">
+          
+          {/* Contact Strip */}
+          <div className="flex flex-col md:flex-row justify-between items-baseline w-full text-[11px] md:text-xs font-mono mb-4 text-[#F4F1EC] opacity-80 gap-4 md:gap-0">
+            <a href="#" className="hover:text-white hover:opacity-100 transition-all">@damagedgoods.in</a>
+            <a href="mailto:support@damagedgoods.in" className="hover:text-white hover:opacity-100 transition-all">support@damagedgoods.in</a>
+            <span className="hidden md:inline">India</span>
+          </div>
 
-          {/* BRAND LEDGER & NEWSLETTER */}
-          <div className="col-span-2 md:col-span-1 flex flex-col justify-start">
-            <h3 className="text-[11px] font-black tracking-[0.25em] uppercase mb-2 text-white">
+          {/* Massive Typography */}
+          <div className="w-full overflow-hidden flex justify-center pointer-events-none select-none border-b border-[#F4F1EC]/10 px-2 md:px-4 pb-2 pt-4">
+            <h1 
+              ref={parallaxRef}
+              className="text-[55px] sm:text-[90px] md:text-[11vw] font-black uppercase leading-[0.85] tracking-tighter m-0 p-0 text-transparent w-full text-center whitespace-nowrap"
+              style={{ WebkitTextStroke: '1.2px #F4F1EC' }}
+            >
               DAMAGED GOODS
-            </h3>
-            <p className="text-[10px] text-neutral-500 font-normal leading-relaxed mb-4">
-              Modern aesthetics through premium design.
-            </p>
-
-            <div className="flex gap-4 mb-4 items-center">
-              <a href="#" className="text-neutral-500 hover:text-white transition-colors">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-neutral-500 hover:text-white transition-colors">
-                <Twitter className="w-4 h-4" />
-              </a>
-            </div>
-
-            {/* Newsletter bar */}
-            <div className="w-full max-w-[160px]">
-              <div className="flex w-full items-center border border-neutral-900 bg-[#0a0a0a] overflow-hidden p-0.5">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full bg-transparent text-neutral-400 text-[10px] px-2 py-1 focus:outline-none min-w-0 placeholder:text-neutral-700"
-                />
-                <button className="bg-white text-black text-[9px] font-black tracking-wider uppercase px-2 py-1 hover:bg-neutral-200 transition-colors shrink-0">
-                  SUB
-                </button>
-              </div>
-            </div>
+            </h1>
           </div>
 
-          {/* COLLECTIONS */}
-          <div className="col-span-1">
-            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">COLLECTIONS</p>
-            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
-              {["Outerwear", "Tops", "Bottoms", "Footwear", "Accessories", "Archive"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
+          {/* Bottom Bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center w-full pb-8 pt-5 text-[9px] md:text-[10px] font-mono uppercase text-[#F4F1EC] opacity-80">
+            <p className="mb-4 md:mb-0">© 2026 DAMAGED GOODS. ALL RIGHTS RESERVED.</p>
+            <div className="flex flex-wrap justify-center gap-6">
+              {['Privacy Policy', 'Terms of Use', 'Consent Preferences'].map((item) => (
+                <a key={item} href="#" className="hover:text-white hover:opacity-100 transition-all underline decoration-[0.5px] underline-offset-[5px]">
+                  {item}
+                </a>
               ))}
-            </ul>
-          </div>
-
-          {/* SUPPORT */}
-          <div className="col-span-1">
-            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">SUPPORT</p>
-            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
-              {["FAQ", "Shipping & Returns", "Size Guide", "Track Order", "Contact Us"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* COMPANY */}
-          <div className="col-span-1">
-            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">COMPANY</p>
-            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
-              {["Our Story", "Manifesto", "Philosophy", "Sustainability"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* LEGAL */}
-          <div className="col-span-1">
-            <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-400 mb-3">LEGAL</p>
-            <ul className="space-y-2 text-[10px] text-neutral-500 font-medium">
-              {["Privacy Policy", "Terms", "Refund"].map((item) => (
-                <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* LATEST DROP PREVIEW */}
-          <div className="col-span-2 md:col-span-1 flex flex-col md:items-end">
-            <div className="w-full max-w-[80px] md:ml-auto">
-              <p className="text-[10px] font-black tracking-[0.15em] uppercase text-neutral-450 mb-2 md:text-right">LATEST DROP</p>
-              <div className="w-full aspect-[4/5] bg-neutral-900 overflow-hidden border border-neutral-950 mb-1.5">
-                <img
-                  src={products[products.length - 1]?.image || "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=400&auto=format&fit=crop"}
-                  alt="Drop Snapshot"
-                  className="w-full h-full object-cover filter contrast-[1.05] brightness-90"
-                />
-              </div>
-              <a href="#" className="text-[9px] font-black tracking-wider text-neutral-300 hover:text-white transition-colors flex items-center gap-0.5 md:justify-end w-full group">
-                <span>SHOP</span>
-                <ArrowRight className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform" />
-              </a>
             </div>
           </div>
         </div>
-
-        {/* UTILITY FOOTER LINE */}
-        <div className="border-t border-neutral-950 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-[9px] tracking-widest text-neutral-500 uppercase font-medium">
-          <div>
-            <span className="font-bold text-neutral-400">© 2026 DAMAGED GOODS.</span> ALL RIGHTS RESERVED.
-          </div>
-          <div className="flex items-center gap-4 text-neutral-600">
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span className="text-neutral-400">ONLINE</span>
-            </div>
-            <span>WORLDWIDE SHIPPING</span>
-            <span className="text-neutral-400 font-bold">IN / INR ▼</span>
-          </div>
-          <div className="flex items-center gap-3 font-sans text-neutral-600 text-[9px] tracking-normal">
-            <span className="text-neutral-500 font-bold">VISA</span>
-            <span className="font-bold text-neutral-500">UPI</span>
-            <span className="text-neutral-500 font-bold">PAYPAL</span>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 }
