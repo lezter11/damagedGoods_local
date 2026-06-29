@@ -79,6 +79,12 @@ function AppContent() {
       history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
+    // Double-check scroll reset after a tiny delay for stubborn browsers
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
 
     // 2. Initialize GSAP Plugins
     gsap.registerPlugin(ScrollTrigger);
